@@ -1,0 +1,45 @@
+NAME
+    Beam::Emitter - Role for event emitting classes
+
+SYNOPSIS
+        package My::Emitter;
+
+        use Moo;
+        with 'Beam::Emitter';
+
+        sub do_something {
+            my ( $self ) = @_;
+
+            # Give event listeners a chance to prevent something
+            my $event = $self->emit( "before_something" );
+            return if $event->is_default_stopped;
+
+            # ... do something
+
+            # Notify listeners we're done with something
+            $self->emit( 'after_something' );
+        }
+
+DESCRIPTION
+    This role is used by classes that want to emit "Beam::Event" objects to
+    subscribers.
+
+METHODS
+  subscribe ( event_name, subref )
+  on ( event_name, subref )
+    Subscribe to an event from this object. "event_name" is the name of the
+    event. "subref" is a subroutine reference that takes a single argument,
+    the "Beam::Event" that is being emitted.
+
+  un ( event_name [, subref ] )
+  unsubscribe ( event_name [, subref ] )
+    Unsubscribe from an event. "event_name" is the name of the event.
+    "subref" is the single listener subref to be removed. If no subref is
+    given, will remove all listeners for this event.
+
+  emit ( name, event_args )
+    Emit an event with the given "name". "event_args" is a list of name =>
+    value pairs to give to the "Beam::Event" object.
+
+    Use the "class" key in event_args to specify a different Event class.
+
