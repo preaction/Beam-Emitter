@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moo::Role;
-use MooX::Types::MooseLike::Base qw(:all);
+use Types::Standard qw(:all);
 use Scalar::Util qw( refaddr );
 use Carp qw( croak );
 use Beam::Event;

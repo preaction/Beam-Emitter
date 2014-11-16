@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Moo;
-use MooX::Types::MooseLike::Base qw(:all);
+use Types::Standard qw(:all);
 
 has name => (
     is          => 'ro',
