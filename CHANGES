@@ -1,0 +1,26 @@
+Changelog for Beam-Emitter
+
+0.003 2014-11-16T01:42:19
+ - allow cpanfile to be dirty
+ - add new build artifacts
+ - fix dist.ini after copying from Beam-Wire
+ - interleave and update documentation for weaving
+ - clarify which method uses Beam::Event
+ - add more missing dependencies
+ - switch to Type::Tiny
+ - add missing Test::More dependency
+ - update dist.ini and add travis-ci
+ - add emit_args to give args directly to listeners
+ - update weaver.ini from new default skeleton
+ - add Build.PL to the base repo
+ - SurgicalPodWeaver -> PodWeaver
+
+0.002 2013-04-18T01:08:23
+ - update dist details to be higher kwalitee
+ - Update lib/Beam/Emitter.pm
+
+0.001 2013-02-15T07:47:31
+ - add README for github
+ - add dist directories to gitignore
+ - basic event class and emitter role
+

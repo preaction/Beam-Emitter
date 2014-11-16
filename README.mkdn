@@ -2,6 +2,14 @@
 
 Beam::Emitter - Role for event emitting classes
 
+# VERSION
+
+version 0.003
+
+# STATUS
+
+<a href="https://travis-ci.org/preaction/Beam-Wire"><img src="https://travis-ci.org/preaction/Beam-Wire.svg?branch=master"></a><a href="https://coveralls.io/r/preaction/Beam-Wire"><img src="https://coveralls.io/repos/preaction/Beam-Wire/badge.png" alt="Coverage Status" /></a>
+
 # SYNOPSIS
 
     package My::Emitter;
@@ -24,20 +32,25 @@ Beam::Emitter - Role for event emitting classes
 
 # DESCRIPTION
 
-This role is used by classes that want to emit `Beam::Event` objects
-to subscribers.
+This role is used by classes that want to emit events to subscribers.
+
+# ATTRIBUTES
+
+## \_listeners
+
+The event listeners registered on this object.
 
 # METHODS
 
 ## subscribe ( event\_name, subref )
 
-## on ( event\_name, subref )
-
 Subscribe to an event from this object. `event_name` is the name of the event.
 `subref` is a subroutine reference that takes a single argument, the
 `Beam::Event` that is being emitted.
 
-## un ( event\_name \[, subref \] )
+## on ( event\_name, subref )
+
+Alias for ["subscribe"](#subscribe).
 
 ## unsubscribe ( event\_name \[, subref \] )
 
@@ -45,9 +58,31 @@ Unsubscribe from an event. `event_name` is the name of the event. `subref` is
 the single listener subref to be removed. If no subref is given, will remove
 all listeners for this event.
 
+## un ( event\_name \[, subref \] )
+
+An alias for ["unsubscribe"](#unsubscribe)
+
 ## emit ( name, event\_args )
 
-Emit an event with the given `name`. `event_args` is a list of name => value
+Emit a [Beam::Event](https://metacpan.org/pod/Beam::Event) with the given `name`. `event_args` is a list of name => value
 pairs to give to the `Beam::Event` object.
 
 Use the `class` key in event\_args to specify a different Event class.
+
+## emit\_args ( name, callback\_args )
+
+Emit an event with the given `name`. `callback_args` is a list that will be given
+directly to each subscribed callback.
+
+Use this to completely avoid using [Beam::Event](https://metacpan.org/pod/Beam::Event) completely.
+
+# AUTHOR
+
+Doug Bell <preaction@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Doug Bell.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
