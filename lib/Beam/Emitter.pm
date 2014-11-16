@@ -55,6 +55,14 @@ sub emit {
     return $event;
 }
 
+sub emit_args {
+    my ( $self, $name, @args ) = @_;
+    for my $listener( @{ $self->_listeners->{$name} } ) {
+        $listener->( @args );
+    }
+    return;
+}
+
 1;
 __END__
 
@@ -112,3 +120,9 @@ pairs to give to the C<Beam::Event> object.
 
 Use the C<class> key in event_args to specify a different Event class.
 
+=head2 emit_args ( name, callback_args )
+
+Emit an event with the given C<name>. C<callback_args> is a list that will be given
+directly to each subscribed callback.
+
+Use this to completely avoid using L<Beam::Event> completely.

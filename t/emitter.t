@@ -106,4 +106,27 @@ subtest 'stop default' => sub {
     $emitter->foo;
 };
 
+{
+    package My::Emitter::Args;
+
+    use Moo;
+    with 'Beam::Emitter';
+
+    sub foo {
+        my ( $self ) = @_;
+        $self->emit_args( foo => $self, 'arg' );
+    }
+}
+
+subtest 'emit args' => sub {
+    my $emitter = My::Emitter::Args->new;
+    my $foo_listener = sub {
+        my ( $self, $arg ) = @_;
+        is $self, $emitter, 'emitter passes itself as first argument';
+        is $arg, 'arg', 'emitter passes a second argument';
+    };
+    $emitter->on( foo => $foo_listener );
+    $emitter->foo;
+};
+
 done_testing;
