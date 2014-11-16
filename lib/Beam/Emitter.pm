@@ -92,8 +92,7 @@ Beam::Emitter - Role for event emitting classes
 
 =head1 DESCRIPTION
 
-This role is used by classes that want to emit C<Beam::Event> objects
-to subscribers.
+This role is used by classes that want to emit events to subscribers.
 
 =head1 METHODS
 
@@ -115,7 +114,7 @@ all listeners for this event.
 
 =head2 emit ( name, event_args )
 
-Emit an event with the given C<name>. C<event_args> is a list of name => value
+Emit a L<Beam::Event> with the given C<name>. C<event_args> is a list of name => value
 pairs to give to the C<Beam::Event> object.
 
 Use the C<class> key in event_args to specify a different Event class.
