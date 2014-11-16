@@ -1,4 +1,5 @@
 package Beam::Event;
+# ABSTRACT: Base Event class
 
 use strict;
 use warnings;
@@ -6,11 +7,23 @@ use warnings;
 use Moo;
 use Types::Standard qw(:all);
 
+=attr name
+
+The name of the event. This is the string that is given to C<Beam::Emitter::on>.
+
+=cut
+
 has name => (
     is          => 'ro',
     isa         => Str,
     required    => 1,
 );
+
+=attr emitter
+
+The emitter of this event. This is the object that created the event.
+
+=cut
 
 has emitter => (
     is          => 'ro',
@@ -18,11 +31,29 @@ has emitter => (
     required    => 1,
 );
 
+=attr is_default_stopped
+
+This is true if anyone called L</stop_default> on this event.
+
+Your L<Beam::Emitter|emitter> should check this attribute before trying to do
+what the event was notifying about.
+
+=cut
+
 has is_default_stopped => (
     is          => 'rw',
     isa         => Bool,
     default     => sub { 0 },
 );
+
+=attr is_stopped
+
+This is true if anyone called L</stop> on this event.
+
+When using L<Beam::Emitter/emit|the emit method>, this is checked automatically
+after every callback, and event processing is stopped if this is true.
+
+=cut
 
 has is_stopped => (
     is          => 'rw',
@@ -30,10 +61,26 @@ has is_stopped => (
     default     => sub { 0 },
 );
 
+=method stop_default ()
+
+Calling this will cause the default behavior of this event to be stopped.
+
+B<NOTE:> Your event-emitting object must check L</is_default_stopped> for this
+behavior to work.
+
+=cut
+
 sub stop_default {
     my ( $self ) = @_;
     $self->is_default_stopped( 1 );
 }
+
+=method stop ()
+
+Calling this will immediately stop any further processing of this event.
+Also calls L</stop_default>.
+
+=cut
 
 sub stop {
     my ( $self ) = @_;
@@ -43,10 +90,6 @@ sub stop {
 
 1;
 __END__
-
-=head1 NAME
-
-Beam::Event - Base Event class
 
 =head1 SYNOPSIS
 
@@ -66,25 +109,4 @@ This is the base event class for C<Beam::Emitter> objects.
 
 The base class is only really useful for notifications. Create a subclass
 to add data attributes.
-
-=head1 ATTRIBUTES
-
-=head2 name
-
-The name of the event. This is the string that is given to C<Beam::Emitter::on>.
-
-=head2 emitter
-
-The emitter of this event. This is the object that created the event.
-
-=head1 METHODS
-
-=head2 stop ()
-
-Calling this will immediately stop any further processing of this event.
-Also calls C<stop_default()>.
-
-=head2 stop_default ()
-
-Calling this will cause the default behavior of this event to be stopped.
 

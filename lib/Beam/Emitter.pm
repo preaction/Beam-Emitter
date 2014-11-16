@@ -1,4 +1,5 @@
 package Beam::Emitter;
+# ABSTRACT: Role for event emitting classes
 
 use strict;
 use warnings;
@@ -9,11 +10,25 @@ use Scalar::Util qw( refaddr );
 use Carp qw( croak );
 use Beam::Event;
 
+=attr _listeners
+
+The event listeners registered on this object.
+
+=cut
+
 has _listeners => (
     is      => 'ro',
     isa     => HashRef,
     default => sub { {} },
 );
+
+=method subscribe ( event_name, subref )
+
+Subscribe to an event from this object. C<event_name> is the name of the event.
+C<subref> is a subroutine reference that takes a single argument, the
+C<Beam::Event> that is being emitted.
+
+=cut
 
 sub subscribe {
     my ( $self, $name, $sub ) = @_;
@@ -21,7 +36,21 @@ sub subscribe {
     return;
 }
 
+=method on ( event_name, subref )
+
+Alias for L</subscribe>.
+
+=cut
+
 *on = \&subscribe;
+
+=method unsubscribe ( event_name [, subref ] )
+
+Unsubscribe from an event. C<event_name> is the name of the event. C<subref> is
+the single listener subref to be removed. If no subref is given, will remove
+all listeners for this event.
+
+=cut
 
 sub unsubscribe {
     my ( $self, $name, $sub ) = @_;
@@ -40,7 +69,22 @@ sub unsubscribe {
     return;
 }
 
+=method un ( event_name [, subref ] )
+
+An alias for L</unsubscribe>
+
+=cut
+
 *un = \&unsubscribe;
+
+=method emit ( name, event_args )
+
+Emit a L<Beam::Event> with the given C<name>. C<event_args> is a list of name => value
+pairs to give to the C<Beam::Event> object.
+
+Use the C<class> key in event_args to specify a different Event class.
+
+=cut
 
 sub emit {
     my ( $self, $name, %args ) = @_;
@@ -55,6 +99,15 @@ sub emit {
     return $event;
 }
 
+=method emit_args ( name, callback_args )
+
+Emit an event with the given C<name>. C<callback_args> is a list that will be given
+directly to each subscribed callback.
+
+Use this to completely avoid using L<Beam::Event> completely.
+
+=cut
+
 sub emit_args {
     my ( $self, $name, @args ) = @_;
     for my $listener( @{ $self->_listeners->{$name} } ) {
@@ -65,10 +118,6 @@ sub emit_args {
 
 1;
 __END__
-
-=head1 NAME
-
-Beam::Emitter - Role for event emitting classes
 
 =head1 SYNOPSIS
 
@@ -94,34 +143,3 @@ Beam::Emitter - Role for event emitting classes
 
 This role is used by classes that want to emit events to subscribers.
 
-=head1 METHODS
-
-=head2 subscribe ( event_name, subref )
-
-=head2 on ( event_name, subref )
-
-Subscribe to an event from this object. C<event_name> is the name of the event.
-C<subref> is a subroutine reference that takes a single argument, the
-C<Beam::Event> that is being emitted.
-
-=head2 un ( event_name [, subref ] )
-
-=head2 unsubscribe ( event_name [, subref ] )
-
-Unsubscribe from an event. C<event_name> is the name of the event. C<subref> is
-the single listener subref to be removed. If no subref is given, will remove
-all listeners for this event.
-
-=head2 emit ( name, event_args )
-
-Emit a L<Beam::Event> with the given C<name>. C<event_args> is a list of name => value
-pairs to give to the C<Beam::Event> object.
-
-Use the C<class> key in event_args to specify a different Event class.
-
-=head2 emit_args ( name, callback_args )
-
-Emit an event with the given C<name>. C<callback_args> is a list that will be given
-directly to each subscribed callback.
-
-Use this to completely avoid using L<Beam::Event> completely.
