@@ -283,5 +283,7 @@ someone before it does.
 
 =item L<http://perladvent.org/2013/2013-12-16.html>
 
+Coordinating Christmas Dinner with Beam::Emitter by Yanick Champoux.
+
 =back
 
