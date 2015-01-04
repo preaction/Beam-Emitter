@@ -2,7 +2,7 @@ NAME
     Beam::Emitter - Role for event emitting classes
 
 VERSION
-    version 0.004
+    version 0.005
 
 SYNOPSIS
         package My::Emitter;
@@ -23,8 +23,138 @@ SYNOPSIS
             $self->emit( 'after_something' );
         }
 
+        sub custom_something {
+            my ( $self ) = @_;
+
+            # Send arbitrary arguments to our event listener
+            $self->emit_args( 'custom_something', "foo", "bar" );
+        }
+
 DESCRIPTION
-    This role is used by classes that want to emit events to subscribers.
+    This role is used by classes that want to emit events to subscribers. A
+    subscriber registers interest in an event using the subscribe or on
+    methods. Then, the class can emit events to be handled by any listening
+    subscribers.
+
+    Using the Beam::Event class, subscribers can stop an event from being
+    processed, or prevent the default action from happening.
+
+  Using Beam::Event
+    Beam::Event is an event object with some simple methods to allow
+    subscribers to influence the handling of the event. By calling the stop
+    method, subscribers can stop all futher handling of the event. By
+    calling the stop_default, subscribers can allow other subscribers to be
+    notified about the event, but let the emitter know that it shouldn't
+    continue with what it was going to do.
+
+    For example, let's build a door that notifies when someone tries to open
+    it. Different instances of a door should allow different checks before
+    the door opens, so we'll emit an event before we decide to open.
+
+        package Door;
+        use Moo;
+        with 'Beam::Emitter';
+
+        sub open {
+            my ( $self, $who ) = @_;
+            my $event = $self->emit( 'before_open' );
+            return if $event->is_default_stopped;
+            $self->open_the_door;
+        }
+
+        package main;
+        my $door = Door->new;
+        $door->open;
+
+    Currently, our door will open for anybody. But let's build a door that
+    only open opens after noon (to keep us from having to wake up in the
+    morning).
+
+        use Time::Piece;
+        my $restful_door = Door->new;
+
+        $restful_door->on( before_open => sub {
+            my ( $event ) = @_;
+
+            my $time = Time::Piece->now;
+            if ( $time->hour < 12 ) {
+                $event->stop_default;
+            }
+
+        } );
+
+        $restful_door->open;
+
+    By calling "stop_default" in Beam::Event, we set the
+    "is_default_stopped" in Beam::Event flag, which the door sees and
+    decides not to open.
+
+  Using Custom Events
+    The default "Beam::Event" is really only useful for notifications. If
+    you want to give your subscribers some data, you need to create a custom
+    event class. This allows you to add attributes and methods to your
+    events (with all the type constraints and coersions you want).
+
+    Let's build a door that can keep certain people out. Right now, our door
+    doesn't care who is trying to open it, and our subscribers do not get
+    enough information to deny entry to certain people.
+
+    So first we need to build an event object that can let our subscribers
+    know who is knocking on the door.
+
+        package Door::Knock;
+        use Moo;
+        extends 'Beam::Event';
+
+        has who => (
+            is => 'ro',
+            required => 1,
+        );
+
+    Now that we can represent who is knocking, let's notify our subscribers.
+
+        package Door;
+        use Moo;
+        with 'Beam::Emitter';
+
+        sub open {
+            my ( $self, $who ) = @_;
+            my $event = $self->emit( 'before_open', class => 'Door::Knock', who => $who );
+            return if $event->is_default_stopped;
+            $self->open_the_door;
+        }
+
+    Finally, let's build a listener that knows who is allowed in the door.
+
+        my $private_door = Door->new;
+        $private_door->on( before_open => sub {
+            my ( $event ) = @_;
+
+            if ( $event->who ne 'preaction' ) {
+                $event->stop_default;
+            }
+
+        } );
+
+        $private_door->open;
+
+  Without Beam::Event
+    Although checking "is_default_stopped" is completely optional, if you do
+    not wish to use the "Beam::Event" object, you can instead call emit_args
+    instead of emit to give arbitrary arguments to your listeners.
+
+        package Door;
+        use Moo;
+        with 'Beam::Emitter';
+
+        sub open {
+            my ( $self, $who ) = @_;
+            my $event = $self->emit_args( 'open', $who );
+            $self->open_the_door;
+        }
+
+    There's no way to stop the door being opened, but you can at least
+    notify someone before it does.
 
 ATTRIBUTES
   _listeners
@@ -33,8 +163,9 @@ ATTRIBUTES
 METHODS
   subscribe ( event_name, subref )
     Subscribe to an event from this object. "event_name" is the name of the
-    event. "subref" is a subroutine reference that takes a single argument,
-    the "Beam::Event" that is being emitted.
+    event. "subref" is a subroutine reference that will get either a
+    Beam::Event object (if using the emit method) or something else (if
+    using the emit_args method).
 
   on ( event_name, subref )
     Alias for "subscribe".
@@ -49,15 +180,16 @@ METHODS
 
   emit ( name, event_args )
     Emit a Beam::Event with the given "name". "event_args" is a list of name
-    => value pairs to give to the "Beam::Event" object.
+    => value pairs to give to the "Beam::Event" constructor.
 
-    Use the "class" key in event_args to specify a different Event class.
+    Use the "class" key in "event_args" to specify a different Event class.
 
   emit_args ( name, callback_args )
     Emit an event with the given "name". "callback_args" is a list that will
     be given directly to each subscribed callback.
 
-    Use this to completely avoid using Beam::Event completely.
+    Use this if you want to avoid using Beam::Event, though you miss out on
+    the control features like stop and stop default.
 
 AUTHOR
     Doug Bell <preaction@cpan.org>
