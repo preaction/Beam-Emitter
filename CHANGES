@@ -1,6 +1,10 @@
 Changelog for Beam-Emitter
 
-0.005 2015-01-04T02:46:03
+0.006 2015-01-04T02:55:46
+ - fix POD errors and add SEE ALSO sections
+
+0.005 2015-01-04T02:46:14
+ - release v0.005
  - add tutorial-style documentation
  - add link to #beam on irc.perl.org
 

@@ -4,7 +4,7 @@ Beam::Emitter - Role for event emitting classes
 
 # VERSION
 
-version 0.005
+version 0.006
 
 # STATUS
 
@@ -207,6 +207,11 @@ directly to each subscribed callback.
 
 Use this if you want to avoid using [Beam::Event](https://metacpan.org/pod/Beam::Event), though you miss out on the control
 features like [stop](https://metacpan.org/pod/Beam::Event#stop) and [stop default](https://metacpan.org/pod/Beam::Event#stop_default).
+
+# SEE ALSO
+
+- [Beam::Event](https://metacpan.org/pod/Beam::Event)
+- [http://perladvent.org/2013/2013-12-16.html](http://perladvent.org/2013/2013-12-16.html)
 
 # AUTHOR
 

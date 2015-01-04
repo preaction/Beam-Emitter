@@ -2,7 +2,7 @@ NAME
     Beam::Emitter - Role for event emitting classes
 
 VERSION
-    version 0.005
+    version 0.006
 
 SYNOPSIS
         package My::Emitter;
@@ -190,6 +190,10 @@ METHODS
 
     Use this if you want to avoid using Beam::Event, though you miss out on
     the control features like stop and stop default.
+
+SEE ALSO
+    Beam::Event
+    <http://perladvent.org/2013/2013-12-16.html>
 
 AUTHOR
     Doug Bell <preaction@cpan.org>
