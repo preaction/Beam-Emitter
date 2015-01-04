@@ -269,7 +269,7 @@ instead of L<emit> to give arbitrary arguments to your listeners.
 
     sub open {
         my ( $self, $who ) = @_;
-        my $event = $self->emit_args( 'open', $who );
+        $self->emit_args( 'open', $who );
         $self->open_the_door;
     }
 
