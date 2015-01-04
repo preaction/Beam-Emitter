@@ -2,7 +2,7 @@ NAME
     Beam::Emitter - Role for event emitting classes
 
 VERSION
-    version 0.006
+    version 0.007
 
 SYNOPSIS
         package My::Emitter;
@@ -85,9 +85,8 @@ DESCRIPTION
 
         $restful_door->open;
 
-    By calling "stop_default" in Beam::Event, we set the
-    "is_default_stopped" in Beam::Event flag, which the door sees and
-    decides not to open.
+    By calling stop_default, we set the is_default_stopped flag, which the
+    door sees and decides not to open.
 
   Using Custom Events
     The default "Beam::Event" is really only useful for notifications. If
@@ -149,7 +148,7 @@ DESCRIPTION
 
         sub open {
             my ( $self, $who ) = @_;
-            my $event = $self->emit_args( 'open', $who );
+            $self->emit_args( 'open', $who );
             $self->open_the_door;
         }
 
@@ -194,6 +193,7 @@ METHODS
 SEE ALSO
     Beam::Event
     <http://perladvent.org/2013/2013-12-16.html>
+        Coordinating Christmas Dinner with Beam::Emitter by Yanick Champoux.
 
 AUTHOR
     Doug Bell <preaction@cpan.org>

@@ -1,6 +1,12 @@
 Changelog for Beam-Emitter
 
-0.006 2015-01-04T02:55:46
+0.007 2015-01-04T14:30:47
+ - fix docs to remove return value from emit_args()
+ - fix link text to read more like a paragraph
+ - add tagline for advent article
+
+0.006 2015-01-04T02:55:56
+ - release v0.006
  - fix POD errors and add SEE ALSO sections
 
 0.005 2015-01-04T02:46:14
