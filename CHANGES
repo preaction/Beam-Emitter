@@ -1,6 +1,15 @@
 Changelog for Beam-Emitter
 
-0.003 2014-11-16T01:42:19
+0.004 2015-01-04T01:54:51
+ - update Types::Standard to 0.008
+ - update copyright year
+ - add contributors dzil plugin for proper attribution
+ - only ignore bundles in the dist root
+ - only remove .ini files from the dist root
+ - add dzil tag annotation with name, date, and changelog
+
+0.003 2014-11-16T01:42:26
+ - release v0.003
  - allow cpanfile to be dirty
  - add new build artifacts
  - fix dist.ini after copying from Beam-Wire

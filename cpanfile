@@ -1,7 +1,7 @@
 requires "Carp" => "0";
 requires "Moo" => "0";
 requires "Scalar::Util" => "0";
-requires "Types::Standard" => "0";
+requires "Types::Standard" => "0.008";
 requires "strict" => "0";
 requires "warnings" => "0";
 
