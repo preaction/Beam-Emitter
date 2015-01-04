@@ -274,3 +274,14 @@ instead of L<emit> to give arbitrary arguments to your listeners.
 
 There's no way to stop the door being opened, but you can at least notify
 someone before it does.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Beam::Event>
+
+=item L<http://perladvent.org/2013/2013-12-16.html>
+
+=back
+

@@ -9,7 +9,7 @@ use Types::Standard qw(:all);
 
 =attr name
 
-The name of the event. This is the string that is given to C<Beam::Emitter::on>.
+The name of the event. This is the string that is given to L<Beam::Emitter/on>.
 
 =cut
 
@@ -35,7 +35,7 @@ has emitter => (
 
 This is true if anyone called L</stop_default> on this event.
 
-Your L<Beam::Emitter|emitter> should check this attribute before trying to do
+Your L<emitter|Beam::Emitter> should check this attribute before trying to do
 what the event was notifying about.
 
 =cut
@@ -50,7 +50,7 @@ has is_default_stopped => (
 
 This is true if anyone called L</stop> on this event.
 
-When using L<Beam::Emitter/emit|the emit method>, this is checked automatically
+When using L<the emit method|Beam::Emitter/emit>, this is checked automatically
 after every callback, and event processing is stopped if this is true.
 
 =cut
@@ -109,4 +109,12 @@ This is the base event class for C<Beam::Emitter> objects.
 
 The base class is only really useful for notifications. Create a subclass
 to add data attributes.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Beam::Emitter>
+
+=back
 
