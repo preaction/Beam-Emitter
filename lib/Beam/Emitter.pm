@@ -234,6 +234,7 @@ Now that we can represent who is knocking, let's notify our subscribers.
 
     package Door;
     use Moo;
+    use Door::Knock; # Our emitter must load the class, Beam::Emitter will not
     with 'Beam::Emitter';
 
     sub open {
