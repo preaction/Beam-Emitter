@@ -19,7 +19,7 @@ my %module_build_args = (
     "Doug Bell <preaction\@cpan.org>"
   ],
   "dist_name" => "Beam-Emitter",
-  "dist_version" => "0.007",
+  "dist_version" => "0.008",
   "license" => "perl",
   "module_name" => "Beam::Emitter",
   "recommends" => {},
@@ -34,7 +34,9 @@ my %module_build_args = (
   },
   "script_files" => [],
   "test_requires" => {
-    "Test::Compile" => 0,
+    "File::Spec" => 0,
+    "IO::Handle" => 0,
+    "IPC::Open3" => 0,
     "Test::Exception" => 0,
     "Test::More" => 0
   }
@@ -42,8 +44,10 @@ my %module_build_args = (
 
 
 my %fallback_build_requires = (
+  "File::Spec" => 0,
+  "IO::Handle" => 0,
+  "IPC::Open3" => 0,
   "Module::Build" => "0.28",
-  "Test::Compile" => 0,
   "Test::Exception" => 0,
   "Test::More" => 0
 );

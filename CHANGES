@@ -1,20 +1,27 @@
 Changelog for Beam-Emitter
 
-0.007 2015-01-04T14:30:47
+0.008 2015-03-02T02:33:00
+ - add note about loading custom event classes
+ - add dzil plugin for prereqs and compile tests
+ - remove root dotfiles and root ini files from dist
+ - switch to dzil Git::GatherDir
+ - fix contributors dependency
+
+0.007 2015-01-04T14:30:47Z
  - fix docs to remove return value from emit_args()
  - fix link text to read more like a paragraph
  - add tagline for advent article
 
-0.006 2015-01-04T02:55:56
+0.006 2015-01-04T02:55:56Z
  - release v0.006
  - fix POD errors and add SEE ALSO sections
 
-0.005 2015-01-04T02:46:14
+0.005 2015-01-04T02:46:14Z
  - release v0.005
  - add tutorial-style documentation
  - add link to #beam on irc.perl.org
 
-0.004 2015-01-04T01:55:02
+0.004 2015-01-04T01:55:02Z
  - release v0.004
  - update Types::Standard to 0.008
  - update copyright year
@@ -23,7 +30,7 @@ Changelog for Beam-Emitter
  - only remove .ini files from the dist root
  - add dzil tag annotation with name, date, and changelog
 
-0.003 2014-11-16T01:42:26
+0.003 2014-11-16T01:42:26Z
  - release v0.003
  - allow cpanfile to be dirty
  - add new build artifacts
@@ -39,11 +46,11 @@ Changelog for Beam-Emitter
  - add Build.PL to the base repo
  - SurgicalPodWeaver -> PodWeaver
 
-0.002 2013-04-18T01:08:23
+0.002 2013-04-18T01:08:23Z
  - update dist details to be higher kwalitee
  - Update lib/Beam/Emitter.pm
 
-0.001 2013-02-15T07:47:31
+0.001 2013-02-15T07:47:31Z
  - add README for github
  - add dist directories to gitignore
  - basic event class and emitter role

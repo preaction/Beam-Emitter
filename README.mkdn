@@ -4,7 +4,7 @@ Beam::Emitter - Role for event emitting classes
 
 # VERSION
 
-version 0.007
+version 0.008
 
 # STATUS
 
@@ -124,6 +124,7 @@ Now that we can represent who is knocking, let's notify our subscribers.
 
     package Door;
     use Moo;
+    use Door::Knock; # Our emitter must load the class, Beam::Emitter will not
     with 'Beam::Emitter';
 
     sub open {
@@ -219,6 +220,10 @@ features like [stop](https://metacpan.org/pod/Beam::Event#stop) and [stop defaul
 # AUTHOR
 
 Doug Bell <preaction@cpan.org>
+
+# CONTRIBUTOR
+
+Joel Berger <joel.a.berger@gmail.com>
 
 # COPYRIGHT AND LICENSE
 
