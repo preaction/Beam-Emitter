@@ -10,12 +10,8 @@ use Scalar::Util qw( refaddr );
 use Carp qw( croak );
 use Beam::Event;
 
-=attr _listeners
-
-The event listeners registered on this object.
-
-=cut
-
+# The event listeners on this object, a hashref of arrayrefs of
+# EVENT_NAME => [ CALLBACK, ... ]
 has _listeners => (
     is      => 'ro',
     isa     => HashRef,
