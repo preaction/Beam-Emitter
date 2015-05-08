@@ -156,11 +156,11 @@ processed, or prevent the default action from happening.
 =head2 Using Beam::Event
 
 L<Beam::Event> is an event object with some simple methods to allow subscribers
-to influence the handling of the event. By calling the L<stop|Beam::Event/stop>
-method, subscribers can stop all futher handling of the event. By calling the
-L<stop_default|Beam::Event/stop_default>, subscribers can allow other subscribers
-to be notified about the event, but let the emitter know that it shouldn't
-continue with what it was going to do.
+to influence the handling of the event. By calling L<the stop
+method|Beam::Event/stop>, subscribers can stop all futher handling of the
+event. By calling the L<the stop_default method|Beam::Event/stop_default>,
+subscribers can allow other subscribers to be notified about the event, but let
+the emitter know that it shouldn't continue with what it was going to do.
 
 For example, let's build a door that notifies when someone tries to open it.
 Different instances of a door should allow different checks before the door
