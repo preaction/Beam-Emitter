@@ -1,6 +1,14 @@
 Changelog for Beam-Emitter
 
-0.008 2015-03-02T02:33:00
+1.000 2015-05-08T04:34:31
+ - fix typo in documentation
+ - remove private attribute from public documentation
+
+0.009 2015-05-08T04:34:01Z
+ - fix typo in documentation
+ - remove private attribute from public documentation
+
+0.008 2015-03-02T02:33:00Z
  - add note about loading custom event classes
  - add dzil plugin for prereqs and compile tests
  - remove root dotfiles and root ini files from dist

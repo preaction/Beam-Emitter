@@ -19,7 +19,7 @@ my %module_build_args = (
     "Doug Bell <preaction\@cpan.org>"
   ],
   "dist_name" => "Beam-Emitter",
-  "dist_version" => "0.008",
+  "dist_version" => "1.000",
   "license" => "perl",
   "module_name" => "Beam::Emitter",
   "recommends" => {},

@@ -2,7 +2,7 @@ NAME
     Beam::Emitter - Role for event emitting classes
 
 VERSION
-    version 0.008
+    version 1.000
 
 SYNOPSIS
         package My::Emitter;
@@ -43,9 +43,9 @@ DESCRIPTION
     Beam::Event is an event object with some simple methods to allow
     subscribers to influence the handling of the event. By calling the stop
     method, subscribers can stop all futher handling of the event. By
-    calling the stop_default, subscribers can allow other subscribers to be
-    notified about the event, but let the emitter know that it shouldn't
-    continue with what it was going to do.
+    calling the the stop_default method, subscribers can allow other
+    subscribers to be notified about the event, but let the emitter know
+    that it shouldn't continue with what it was going to do.
 
     For example, let's build a door that notifies when someone tries to open
     it. Different instances of a door should allow different checks before
@@ -155,10 +155,6 @@ DESCRIPTION
 
     There's no way to stop the door being opened, but you can at least
     notify someone before it does.
-
-ATTRIBUTES
-  _listeners
-    The event listeners registered on this object.
 
 METHODS
   subscribe ( event_name, subref )
