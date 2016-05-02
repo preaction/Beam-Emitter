@@ -8,8 +8,7 @@ use Beam::Emitter;
 {
     package MyEmitter;
 
-    use Moose; with 'Beam::Emitter';
-
+    use Moo; with 'Beam::Emitter';
 }
 
 my $emitter = MyEmitter->new;
