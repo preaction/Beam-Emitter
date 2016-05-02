@@ -24,6 +24,8 @@ Subscribe to an event from this object. C<event_name> is the name of the event.
 C<subref> is a subroutine reference that will get either a L<Beam::Event> object
 (if using the L<emit> method) or something else (if using the L<emit_args> method).
 
+If the event name is C<*>, the subref will be called on all events.
+
 =cut
 
 sub subscribe {
@@ -88,7 +90,7 @@ sub emit {
     $args{ emitter  } = $self;
     $args{ name     } = $name;
     my $event = $class->new( %args );
-    for my $listener ( @{ $self->_listeners->{$name} } ) {
+    for my $listener ( map { @{ $self->_listeners->{$_} } } $name, '*' ) {
         $listener->( $event );
         last if $event->is_stopped;
     }
