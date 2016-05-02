@@ -90,7 +90,7 @@ sub emit {
     $args{ emitter  } = $self;
     $args{ name     } = $name;
     my $event = $class->new( %args );
-    for my $listener ( map { @{ $self->_listeners->{$_} } } $name, '*' ) {
+    for my $listener ( map { @{ $self->_listeners->{$_} || [] } } $name, '*' ) {
         $listener->( $event );
         last if $event->is_stopped;
     }
