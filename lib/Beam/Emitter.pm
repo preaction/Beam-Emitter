@@ -18,6 +18,11 @@ has _listeners => (
     default => sub { {} },
 );
 
+has beam_event_prefix => (
+    is        => 'ro',
+    predicate => 'has_beam_event_prefix',
+);
+
 =method subscribe ( event_name, subref )
 
 Subscribe to an event from this object. C<event_name> is the name of the event.
@@ -111,6 +116,52 @@ sub emit_args {
         $listener->( @args );
     }
     return;
+}
+
+=method emit_class ( class_name, event_args )
+
+Emit an event with C<class_name> as its name and class. 
+
+    $self->emit_class( 'My::Event::Foo', baz => 1, quux => 2 );
+
+    # equivalent to
+
+    $self->emit( 'My::Event::Foo', class => 'My::Event::Foo', baz => 1, quux => 2 );
+
+Additionally, a default prefix for the classes's namespace can be specified via
+a C<beam_event_prefix> attribute. This prefix can be bypassed by prepending '+'
+to the c<class_name>.
+
+
+    package My::Emitter;
+
+    use Moo;
+    with 'Beam::Emitter';
+
+    has +beam_event_prefix => (
+        default => 'My::Event',
+    );
+
+    $self->emit_class( 'Foo', baz => 1, quux => 2 );
+        # equivalent to
+    $self->emit( 'Foo', class => 'My::Event::Foo', baz => 1, quux => 2 );
+
+
+    $self->emit_class( '+Their::Event::Foo', baz => 1, quux => 2 );
+        # equivalent to
+    $self->emit( 'Their::Event::Foo', class => 'Their::Event::Foo', baz => 1, quux => 2 );
+
+
+=cut
+
+sub emit_class {
+    my ( $self, $name, @args ) = @_;
+
+    my $class = $name =~ s/^\+// 
+                    ? $name 
+                    : join '::', grep { $_ } $self->beam_event_prefix, $name;
+
+    return $self->emit( $name, class => $class, @args );
 }
 
 1;
