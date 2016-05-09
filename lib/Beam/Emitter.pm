@@ -24,12 +24,23 @@ Subscribe to an event from this object. C<event_name> is the name of the event.
 C<subref> is a subroutine reference that will get either a L<Beam::Event> object
 (if using the L<emit> method) or something else (if using the L<emit_args> method).
 
+Returns a coderef that, when called, unsubscribes the new subscriber.
+
+    my $unsubscribe = $emitter->subscribe( open_door => sub {
+        warn "ding!";
+    } );
+    $emitter->emit( 'open_door' );  # ding!
+    $unsubscribe->();
+    $emitter->emit( 'open_door' );  # no ding
+
 =cut
 
 sub subscribe {
     my ( $self, $name, $sub ) = @_;
     push @{ $self->_listeners->{$name} }, $sub;
-    return;
+    return sub {
+        $self->unsubscribe($name => $sub);
+    };
 }
 
 =method on ( event_name, subref )
