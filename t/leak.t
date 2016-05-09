@@ -20,25 +20,25 @@ BEGIN {
 
 no_leaks_ok {
     my $b = My::Emitter->new;
-    my $cb; $b->on( derp => $cb = sub { $_[0]->emitter->un( derp => $cb ); undef $cb } );
-    $b->emit( 'derp' );
+    my $cb; $b->on( foo => $cb = sub { $_[0]->emitter->un( foo => $cb ); undef $cb } );
+    $b->emit( 'foo' );
 };
 
 no_leaks_ok {
     my $b = My::Emitter->new;
-    my $cb; $cb = $b->on( derp => sub { $cb->() } );
-    $b->emit( 'derp' );
+    my $cb; $cb = $b->on( foo => sub { $cb->() } );
+    $b->emit( 'foo' );
 };
 
 no_leaks_ok {
     my $b = My::Emitter->new;
-    my $cb; $cb = $b->on( derp => sub { $cb->() } );
+    my $cb; $cb = $b->on( foo => sub { $cb->() } );
 };
 
 no_leaks_ok {
     my $b = My::Emitter->new;
-    my $cb; $cb = $b->on( derp => sub { } );
-    $b->emit( 'derp' );
+    my $cb; $cb = $b->on( foo => sub { } );
+    $b->emit( 'foo' );
     $cb->();
 };
 
