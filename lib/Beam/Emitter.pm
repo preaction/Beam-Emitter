@@ -6,7 +6,7 @@ use warnings;
 
 use Moo::Role;
 use Types::Standard qw(:all);
-use Scalar::Util qw( refaddr );
+use Scalar::Util qw( weaken refaddr );
 use Carp qw( croak );
 use Beam::Event;
 
@@ -33,11 +33,40 @@ Returns a coderef that, when called, unsubscribes the new subscriber.
     $unsubscribe->();
     $emitter->emit( 'open_door' );  # no ding
 
+This unsubscribe subref makes it easier to stop our subscription in a safe,
+non-leaking way:
+
+    my $unsub;
+    $unsub = $emitter->subscribe( open_door => sub {
+        $unsub->(); # Only handle one event
+    } );
+    $emitter->emit( 'open_door' );
+
+The above code does not leak memory, but the following code does:
+
+    # Create a memory cycle which must be broken manually
+    my $cb;
+    $cb = sub {
+        my ( $event ) = @_;
+        $event->emitter->unsubscribe( open_door => $cb ); # Only handle one event
+        # Because the callback sub ($cb) closes over a reference to itself
+        # ($cb), it can never be cleaned up unless something breaks the
+        # cycle explicitly.
+    };
+    $emitter->subscribe( open_door => $cb );
+    $emitter->emit( 'open_door' );
+
+The way to fix this second example is to explicitly C<undef $cb> inside the callback
+sub. Forgetting to do that will result in a leak. The returned unsubscribe coderef
+does not have this issue.
+
 =cut
 
 sub subscribe {
     my ( $self, $name, $sub ) = @_;
     push @{ $self->_listeners->{$name} }, $sub;
+    weaken $self;
+    weaken $sub;
     return sub {
         $self->unsubscribe($name => $sub);
     };
