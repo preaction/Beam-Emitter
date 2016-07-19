@@ -1,6 +1,13 @@
 Changelog for Beam-Emitter
 
-1.000 2015-05-08T04:34:31
+1.001 2016-07-19T16:51:49
+ - use a better meta-syntactic variable
+ - fix circular references in unsubscribe callback
+ - return subref that removes the current subscriber
+ - upgrade perl in travis config
+ - remove ModuleBuild to prevent toolchain confusion
+
+1.000 2015-05-08T04:34:31Z
  - fix typo in documentation
  - remove private attribute from public documentation
 
@@ -62,4 +69,3 @@ Changelog for Beam-Emitter
  - add README for github
  - add dist directories to gitignore
  - basic event class and emitter role
-

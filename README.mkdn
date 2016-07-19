@@ -4,7 +4,7 @@ Beam::Emitter - Role for event emitting classes
 
 # VERSION
 
-version 1.000
+version 1.001
 
 # STATUS
 
@@ -175,6 +175,42 @@ Subscribe to an event from this object. `event_name` is the name of the event.
 `subref` is a subroutine reference that will get either a [Beam::Event](https://metacpan.org/pod/Beam::Event) object
 (if using the [emit](https://metacpan.org/pod/emit) method) or something else (if using the [emit\_args](https://metacpan.org/pod/emit_args) method).
 
+Returns a coderef that, when called, unsubscribes the new subscriber.
+
+    my $unsubscribe = $emitter->subscribe( open_door => sub {
+        warn "ding!";
+    } );
+    $emitter->emit( 'open_door' );  # ding!
+    $unsubscribe->();
+    $emitter->emit( 'open_door' );  # no ding
+
+This unsubscribe subref makes it easier to stop our subscription in a safe,
+non-leaking way:
+
+    my $unsub;
+    $unsub = $emitter->subscribe( open_door => sub {
+        $unsub->(); # Only handle one event
+    } );
+    $emitter->emit( 'open_door' );
+
+The above code does not leak memory, but the following code does:
+
+    # Create a memory cycle which must be broken manually
+    my $cb;
+    $cb = sub {
+        my ( $event ) = @_;
+        $event->emitter->unsubscribe( open_door => $cb ); # Only handle one event
+        # Because the callback sub ($cb) closes over a reference to itself
+        # ($cb), it can never be cleaned up unless something breaks the
+        # cycle explicitly.
+    };
+    $emitter->subscribe( open_door => $cb );
+    $emitter->emit( 'open_door' );
+
+The way to fix this second example is to explicitly `undef $cb` inside the callback
+sub. Forgetting to do that will result in a leak. The returned unsubscribe coderef
+does not have this issue.
+
 ## on ( event\_name, subref )
 
 Alias for ["subscribe"](#subscribe).
@@ -215,9 +251,10 @@ features like [stop](https://metacpan.org/pod/Beam::Event#stop) and [stop defaul
 
 Doug Bell <preaction@cpan.org>
 
-# CONTRIBUTOR
+# CONTRIBUTORS
 
-Joel Berger <joel.a.berger@gmail.com>
+- Joel Berger <joel.a.berger@gmail.com>
+- Yanick Champoux <yanick@babyl.dyndns.org>
 
 # COPYRIGHT AND LICENSE
 
