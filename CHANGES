@@ -1,5 +1,9 @@
 Changelog for Beam-Emitter
 
+{{ $NEXT }}
+
+ - Update distribution settings
+
 1.001 2016-07-19T16:51:49
  - use a better meta-syntactic variable
  - fix circular references in unsubscribe callback
