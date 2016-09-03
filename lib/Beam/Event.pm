@@ -1,5 +1,5 @@
 package Beam::Event;
-our $VERSION = '1.002';
+our $VERSION = '1.003';
 # ABSTRACT: Base Event class
 
 use strict;
