@@ -69,7 +69,8 @@ sub subscribe {
     weaken $self;
     weaken $sub;
     return sub {
-        $self->unsubscribe($name => $sub);
+        $self->unsubscribe($name => $sub)
+	  if defined $self;
     };
 }
 
