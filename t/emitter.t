@@ -129,4 +129,11 @@ subtest 'emit args' => sub {
     $emitter->foo;
 };
 
+subtest 'no listeners' => sub {
+    my $emitter = My::Emitter::Args->new;
+
+    lives_ok { $emitter->emit( 'foo' ) } "emit";
+    lives_ok { $emitter->emit_args( 'foo' ) } "emit_args";
+};
+
 done_testing;
