@@ -126,6 +126,9 @@ Use the C<class> key in C<event_args> to specify a different Event class.
 
 sub emit {
     my ( $self, $name, %args ) = @_;
+
+    return unless exists $self->_listeners->{$name};
+
     my $class = delete $args{ class } || "Beam::Event";
     $args{ emitter  } = $self;
     $args{ name     } = $name;
@@ -155,11 +158,13 @@ features like L<stop|Beam::Event/stop> and L<stop default|Beam::Event/stop_defau
 sub emit_args {
     my ( $self, $name, @args ) = @_;
 
+    return unless exists $self->_listeners->{$name};
+
     # don't use $self->_listeners->{$name} directly, as callbacks may unsubscribe
     # from $name, changing the array, and confusing the for loop
     my @listeners = @{ $self->_listeners->{$name} };
 
-    for my $listener( @listeners ) {
+    for my $listener ( @listeners ) {
         $listener->( @args );
     }
     return;
