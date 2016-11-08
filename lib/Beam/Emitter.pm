@@ -129,7 +129,12 @@ sub emit {
     $args{ emitter  } = $self;
     $args{ name     } = $name;
     my $event = $class->new( %args );
-    for my $listener ( @{ $self->_listeners->{$name} } ) {
+
+    # don't use $self->_listeners->{$name} directly, as callbacks may unsubscribe
+    # from $name, changing the array, and confusing the for loop
+    my @listeners = @{ $self->_listeners->{$name} };
+
+    for my $listener ( @listeners  ) {
         $listener->( $event );
         last if $event->is_stopped;
     }
@@ -148,7 +153,12 @@ features like L<stop|Beam::Event/stop> and L<stop default|Beam::Event/stop_defau
 
 sub emit_args {
     my ( $self, $name, @args ) = @_;
-    for my $listener( @{ $self->_listeners->{$name} } ) {
+
+    # don't use $self->_listeners->{$name} directly, as callbacks may unsubscribe
+    # from $name, changing the array, and confusing the for loop
+    my @listeners = @{ $self->_listeners->{$name} };
+
+    for my $listener( @listeners ) {
         $listener->( @args );
     }
     return;
