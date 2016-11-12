@@ -1,6 +1,23 @@
 Changelog for Beam-Emitter
 
-{{ $NEXT }}
+1.003     2016-11-11 21:35:53-06:00 America/Chicago
+
+    [Fixed]
+
+    - Fix the unsubscribe callback (returned from the `subscribe`
+      method) throwing an exception if the emitter object has already
+      been destroyed. Since the unsubscribe callback has a weak
+      reference to the emitter object, we have to make sure the
+      reference still exists before using it to unsubscribe. Thanks
+      @djerius! (Github #14)
+
+    - Fix unsubscribing from an event during an event not firing all the
+      rest of the events properly. When using the unsubscribe callback
+      to create a one-time event handler, the emitter could miss the
+      next event listener (since we were looping over the listeners
+      array and modifying it in the loop). Now we loop over a copy of
+      the listeners array so that the original can be modified to remove
+      the listener we want. Thanks @djerius! (Github #15)
 
 1.002     2016-09-02 18:58:23-05:00 America/Chicago
 
