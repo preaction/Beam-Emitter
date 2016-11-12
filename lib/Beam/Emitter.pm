@@ -1,5 +1,5 @@
 package Beam::Emitter;
-our $VERSION = '1.003';
+our $VERSION = '1.004';
 # ABSTRACT: Role for event emitting classes
 
 use strict;
