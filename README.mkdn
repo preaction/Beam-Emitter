@@ -4,11 +4,11 @@ Beam::Emitter - Role for event emitting classes
 
 # VERSION
 
-version 1.002
+version 1.003
 
 # STATUS
 
-<a href="https://travis-ci.org/preaction/Beam-Wire"><img src="https://travis-ci.org/preaction/Beam-Wire.svg?branch=master"></a><a href="https://coveralls.io/r/preaction/Beam-Wire"><img src="https://coveralls.io/repos/preaction/Beam-Wire/badge.png" alt="Coverage Status" /></a>
+<a href="https://travis-ci.org/preaction/Beam-Emitter"><img src="https://travis-ci.org/preaction/Beam-Emitter.svg?branch=master"></a><a href="https://coveralls.io/r/preaction/Beam-Emitter"><img src="https://coveralls.io/repos/preaction/Beam-Emitter/badge.png" alt="Coverage Status" /></a>
 
 # SYNOPSIS
 
@@ -253,6 +253,7 @@ Doug Bell <preaction@cpan.org>
 
 # CONTRIBUTORS
 
+- Diab Jerius <djerius@cfa.harvard.edu>
 - Joel Berger <joel.a.berger@gmail.com>
 - Yanick Champoux <yanick@babyl.dyndns.org>
 
