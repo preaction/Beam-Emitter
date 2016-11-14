@@ -1,0 +1,30 @@
+#PODNAME: Beam::Emitter::Cookbook
+#ABSTRACT: Recipes for simple Beam::Emitter patterns
+
+=head1 DESCRIPTION
+
+This document contains recipes for things that Beam::Emitter does not do
+by default, but that you can add to your project with only a few lines
+of code.
+
+=head1 RECIPES
+
+=head2 Allow a single listener to catch all events
+
+Sometimes you might want to be able to listen for every single event
+that comes from an event emitter. To do this, we can create an extension
+of the Beam::Emitter that also forwards the event on to a special event
+called C<*>:
+
+    package My::Emitter;
+    use Moo;
+    with 'Beam::Emitter';
+    after emit => sub {
+        my ( $self, $event_name, @args ) = @_;
+        return if $event_name eq '*';
+        $self->emit( '*', name => $event_name, @args );
+    };
+
+Because we pass in the C<name> key to C<emit()>, the original name of
+the event will be available to our listener as C<< $event->name >>.
+

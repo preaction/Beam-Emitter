@@ -336,6 +336,11 @@ someone before it does.
 
 =item L<Beam::Event>
 
+=item L<Beam::Emitter::Cookbook>
+
+This document contains some useful patterns for your event emitters and
+listeners.
+
 =item L<http://perladvent.org/2013/2013-12-16.html>
 
 Coordinating Christmas Dinner with Beam::Emitter by Yanick Champoux.
