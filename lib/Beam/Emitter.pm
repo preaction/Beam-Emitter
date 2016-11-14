@@ -9,17 +9,28 @@ use Types::Standard qw(:all);
 use Scalar::Util qw( weaken refaddr );
 use Carp qw( croak );
 use Beam::Event;
+use Beam::Listener;
 use Moo::Role; # Put this last to ensure proper, automatic cleanup
 
+
 # The event listeners on this object, a hashref of arrayrefs of
-# EVENT_NAME => [ CALLBACK, ... ]
-has _listeners => (
+# EVENT_NAME => [ Beam::Listener object, ... ]
+
+=attr listeners
+
+An array containing the listeners which have subscribed to this
+emitter.  The array elements are instances of classes which inherit
+from L<Beam::Listener>
+
+=cut
+
+has listeners => (
     is      => 'ro',
     isa     => HashRef,
     default => sub { {} },
 );
 
-=method subscribe ( event_name, subref )
+=method subscribe ( event_name, subref, [ %args ] )
 
 Subscribe to an event from this object. C<event_name> is the name of the event.
 C<subref> is a subroutine reference that will get either a L<Beam::Event> object
@@ -61,11 +72,43 @@ The way to fix this second example is to explicitly C<undef $cb> inside the call
 sub. Forgetting to do that will result in a leak. The returned unsubscribe coderef
 does not have this issue.
 
+By default, the emitter only stores the subroutine reference in an
+object of class L<Beam::Listener>.  If more information should be
+stored, use C<%args> to specify the class name and any attributes to be passed
+to its constructor:
+
+  package MyListener;
+  extends 'Beam::Listener';
+
+  # add metadata with subscription time
+  has sub_time => is ( 'ro',
+                        init_arg => undef,
+                        default => sub { time() },
+  );
+
+   # My::Emitter consumes the Beam::Emitter role
+   my $emitter = My::Emitter->new;
+   $emitter->on( "foo", sub {
+        my ( $event ) = @_;
+        print "Foo happened!\n";
+        # stop this event from continuing
+        $event->stop;
+    },
+    class => MyListener
+    );
+
 =cut
 
 sub subscribe {
-    my ( $self, $name, $sub ) = @_;
-    push @{ $self->_listeners->{$name} }, $sub;
+    my ( $self, $name, $sub, %args ) = @_;
+
+    my $class = delete $args{ class } || "Beam::Listener";
+    croak( "listener object must descend from Beam::Listener" )
+      unless $class->isa( 'Beam::Listener' );
+
+    my $listener = $class->new( %args, callback => $sub );
+
+    push @{ $self->listeners->{$name} }, $listener;
     weaken $self;
     weaken $sub;
     return sub {
@@ -93,16 +136,16 @@ all listeners for this event.
 sub unsubscribe {
     my ( $self, $name, $sub ) = @_;
     if ( !$sub ) {
-        delete $self->_listeners->{$name};
+        delete $self->listeners->{$name};
     }
     else {
-        my $listeners = $self->_listeners->{$name};
+        my $listeners = $self->listeners->{$name};
         my $idx = 0;
-        $idx++ until $idx > $#{$listeners} or refaddr $listeners->[$idx] eq refaddr $sub;
+        $idx++ until $idx > $#{$listeners} or refaddr $listeners->[$idx]->callback eq refaddr $sub;
         if ( $idx > $#{$listeners} ) {
             croak "Could not find sub in listeners";
         }
-        splice @{$self->_listeners->{$name}}, $idx, 1;
+        splice @{$self->listeners->{$name}}, $idx, 1;
     }
     return;
 }
@@ -127,19 +170,19 @@ Use the C<class> key in C<event_args> to specify a different Event class.
 sub emit {
     my ( $self, $name, %args ) = @_;
 
-    return unless exists $self->_listeners->{$name};
+    return unless exists $self->listeners->{$name};
 
     my $class = delete $args{ class } || "Beam::Event";
     $args{ emitter  } = $self;
     $args{ name     } ||= $name;
     my $event = $class->new( %args );
 
-    # don't use $self->_listeners->{$name} directly, as callbacks may unsubscribe
+    # don't use $self->listeners->{$name} directly, as callbacks may unsubscribe
     # from $name, changing the array, and confusing the for loop
-    my @listeners = @{ $self->_listeners->{$name} };
+    my @listeners = @{ $self->listeners->{$name} };
 
     for my $listener ( @listeners  ) {
-        $listener->( $event );
+        $listener->callback->( $event );
         last if $event->is_stopped;
     }
     return $event;
@@ -158,14 +201,14 @@ features like L<stop|Beam::Event/stop> and L<stop default|Beam::Event/stop_defau
 sub emit_args {
     my ( $self, $name, @args ) = @_;
 
-    return unless exists $self->_listeners->{$name};
+    return unless exists $self->listeners->{$name};
 
-    # don't use $self->_listeners->{$name} directly, as callbacks may unsubscribe
+    # don't use $self->listeners->{$name} directly, as callbacks may unsubscribe
     # from $name, changing the array, and confusing the for loop
-    my @listeners = @{ $self->_listeners->{$name} };
+    my @listeners = @{ $self->listeners->{$name} };
 
     for my $listener ( @listeners ) {
-        $listener->( @args );
+        $listener->callback->( @args );
     }
     return;
 }
