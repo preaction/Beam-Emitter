@@ -131,7 +131,7 @@ sub emit {
 
     my $class = delete $args{ class } || "Beam::Event";
     $args{ emitter  } = $self;
-    $args{ name     } = $name;
+    $args{ name     } ||= $name;
     my $event = $class->new( %args );
 
     # don't use $self->_listeners->{$name} directly, as callbacks may unsubscribe

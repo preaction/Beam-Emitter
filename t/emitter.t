@@ -136,4 +136,13 @@ subtest 'no listeners' => sub {
     lives_ok { $emitter->emit_args( 'foo' ) } "emit_args";
 };
 
+subtest 'custom name' => sub {
+    my $emitter = My::Emitter->new;
+    my @events;
+    $emitter->on( 'foo', sub { push @events, @_ } );
+    $emitter->emit( 'foo', name => 'bar' );
+    is scalar @events, 1, 'foo event caught';
+    is $events[0]->name, 'bar', 'foo event correctly renamed bar';
+};
+
 done_testing;

@@ -1,5 +1,13 @@
 Changelog for Beam-Emitter
 
+{{ $NEXT }}
+
+    [Added]
+
+    - Allow the event's name to be overridden when emitting the event.
+      This is a rare thing to want, but it makes some future cookbook
+      items (like a catch-all '*' event) more useful.
+
 1.003     2016-11-11 21:35:53-06:00 America/Chicago
 
     [Fixed]
