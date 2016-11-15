@@ -22,21 +22,6 @@ has _listeners => (
     default => sub { {} },
 );
 
-=method listeners( event_name )
-
-Returns an array containing the listeners which have subscribed to the
-specified event from this emitter.  The array elements are instances
-of sub-classes of L<Beam::Listener>.
-
-=cut
-
-sub listeners {
-
-    my ( $self, $name ) = @_;
-
-    return $self->_listeners->{$name} || [];
-}
-
 =method subscribe ( event_name, subref, [ %args ] )
 
 Subscribe to an event from this object. C<event_name> is the name of the event.
@@ -81,29 +66,30 @@ does not have this issue.
 
 By default, the emitter only stores the subroutine reference in an
 object of class L<Beam::Listener>.  If more information should be
-stored, use C<%args> to specify the class name and any attributes to be passed
-to its constructor:
+stored, create a custom subclass of L<Beam::Listener> and use C<%args>
+to specify the class name and any attributes to be passed to its
+constructor:
 
-  package MyListener;
-  extends 'Beam::Listener';
+  {
+    package MyListener;
+    extends 'Beam::Listener';
 
-  # add metadata with subscription time
-  has sub_time => is ( 'ro',
-                        init_arg => undef,
-                        default => sub { time() },
+    # add metadata with subscription time
+    has sub_time => is ( 'ro',
+			  init_arg => undef,
+			  default => sub { time() },
+    );
+  }
+
+  # My::Emitter consumes the Beam::Emitter role
+  my $emitter = My::Emitter->new;
+  $emitter->on( "foo",
+    sub { print "Foo happened!\n"; },
+   class => MyListener
   );
 
-   # My::Emitter consumes the Beam::Emitter role
-   my $emitter = My::Emitter->new;
-   $emitter->on( "foo", sub {
-        my ( $event ) = @_;
-        print "Foo happened!\n";
-        # stop this event from continuing
-        $event->stop;
-    },
-    class => MyListener
-    );
-  
+The L</listeners> method can be used to examine the subscribed listeners.
+
 
 =cut
 
@@ -219,6 +205,22 @@ sub emit_args {
         $listener->callback->( @args );
     }
     return;
+}
+
+=method listeners ( event_name )
+
+Returns an array containing the listeners which have subscribed to the
+specified event from this emitter.  The array elements are either
+instances of L<Beam::Listener> or of custom classes specified in calls
+to L</subscribe>.
+
+=cut
+
+sub listeners {
+
+    my ( $self, $name ) = @_;
+
+    return $self->_listeners->{$name} || [];
 }
 
 1;
