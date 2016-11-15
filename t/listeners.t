@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Exception;
+use Test::Fatal;
 
 use Scalar::Util qw[ refaddr ];
 
@@ -36,7 +36,7 @@ my ( $us11, $us12, $us21, $us22 );
 subtest "Create initial listeners" => sub {
 
     subtest "default listener class" => sub {
-        lives_ok {
+        ok !exception {
             $us11 = $foo->subscribe( evt1 => $s11 );
             $us12 = $foo->subscribe( evt1 => $s12 );
             $us21 = $foo->subscribe( evt2 => $s21 );
@@ -47,13 +47,13 @@ subtest "Create initial listeners" => sub {
     subtest "custom listener class" => sub {
 
         # test constructor is being called with args
-        throws_ok { $foo->subscribe( evt2 => $s22, class => 'Goo' ) }
+        like exception { $foo->subscribe( evt2 => $s22, class => 'Goo' ) },
         qr/missing required arguments/i, "required attribute missing";
 
-        lives_ok {
+        ok !exception {
             $us22
               = $foo->subscribe( evt2 => $s22, class => 'Goo', attr => 's22' )
-        }
+        },
         "required attribute specified";
 
     };
