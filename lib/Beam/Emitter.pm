@@ -209,8 +209,8 @@ sub emit_args {
 
 =method listeners ( event_name )
 
-Returns an array containing the listeners which have subscribed to the
-specified event from this emitter.  The array elements are either
+Returns a list containing the listeners which have subscribed to the
+specified event from this emitter.  The list elements are either
 instances of L<Beam::Listener> or of custom classes specified in calls
 to L</subscribe>.
 
@@ -220,7 +220,7 @@ sub listeners {
 
     my ( $self, $name ) = @_;
 
-    return $self->_listeners->{$name} || [];
+    return @{ $self->_listeners->{$name} || [] };
 }
 
 1;
