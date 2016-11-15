@@ -18,7 +18,12 @@ subtest 'Allow a single listener to catch all events' => sub {
     }
 
     my $emitter = My::Emitter::CatchAll->new;
-    my ( @all, %events );
+    my @all;
+    my %events = (
+        foo => [],
+        bar => [],
+    );
+
     $emitter->on( '*', sub { push @all, \@_ } );
     $emitter->on( 'foo', sub { push @{ $events{foo} }, \@_ } );
     $emitter->on( 'bar', sub { push @{ $events{bar} }, \@_ } );
