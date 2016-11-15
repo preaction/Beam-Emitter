@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Fatal;
+use Test::API;
 
 {
     package My::Emitter;
@@ -10,16 +10,25 @@ use Test::Fatal;
     with 'Beam::Emitter';
 }
 
-my @methods = qw(
-    HashRef
-    weaken refaddr
-    croak
+class_api_ok(
+    'My::Emitter',
+    qw[
+      DOES
+      after
+      around
+      before
+      emit
+      emit_args
+      extends
+      has
+      listeners
+      new
+      on
+      subscribe
+      un
+      unsubscribe
+      with
+      ]
 );
-
-for my $method ( @methods ) {
-    like exception { My::Emitter->new->$method },
-        qr/Can't locate object method "$method" via package "My::Emitter"/,
-        $method . ' cleaned up and not available on our composed class';
-}
 
 done_testing;
