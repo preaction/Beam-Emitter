@@ -13,6 +13,15 @@ Changelog for Beam-Emitter
       generally-desired enough to be part of the main distribution
       always. Thanks @yanick for the help! (Github #12)
 
+    - Enhanced how Beam::Emitter tracks listeners by creating
+      Beam::Listener objects with the option of adding additional
+      metadata to the listener by extending the Beam::Listener class.
+      Thanks @djerius! (Github #16)
+
+    - Added a method (`listeners()`) to list the current listeners
+      (Beam::Listener objects) for an event. Thanks @djerius! (Github
+      #16)
+
     [Fixed]
 
     - The Beam::Emitter role no longer pollutes the consumer's namespace
