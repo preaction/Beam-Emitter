@@ -9,17 +9,20 @@ use Types::Standard qw(:all);
 use Scalar::Util qw( weaken refaddr );
 use Carp qw( croak );
 use Beam::Event;
+use Beam::Listener;
 use Moo::Role; # Put this last to ensure proper, automatic cleanup
 
+
 # The event listeners on this object, a hashref of arrayrefs of
-# EVENT_NAME => [ CALLBACK, ... ]
+# EVENT_NAME => [ Beam::Listener object, ... ]
+
 has _listeners => (
     is      => 'ro',
     isa     => HashRef,
     default => sub { {} },
 );
 
-=method subscribe ( event_name, subref )
+=method subscribe ( event_name, subref, [ %args ] )
 
 Subscribe to an event from this object. C<event_name> is the name of the event.
 C<subref> is a subroutine reference that will get either a L<Beam::Event> object
@@ -61,11 +64,45 @@ The way to fix this second example is to explicitly C<undef $cb> inside the call
 sub. Forgetting to do that will result in a leak. The returned unsubscribe coderef
 does not have this issue.
 
+By default, the emitter only stores the subroutine reference in an
+object of class L<Beam::Listener>.  If more information should be
+stored, create a custom subclass of L<Beam::Listener> and use C<%args>
+to specify the class name and any attributes to be passed to its
+constructor:
+
+  {
+    package MyListener;
+    extends 'Beam::Listener';
+
+    # add metadata with subscription time
+    has sub_time => is ( 'ro',
+			  init_arg => undef,
+			  default => sub { time() },
+    );
+  }
+
+  # My::Emitter consumes the Beam::Emitter role
+  my $emitter = My::Emitter->new;
+  $emitter->on( "foo",
+    sub { print "Foo happened!\n"; },
+   class => MyListener
+  );
+
+The L</listeners> method can be used to examine the subscribed listeners.
+
+
 =cut
 
 sub subscribe {
-    my ( $self, $name, $sub ) = @_;
-    push @{ $self->_listeners->{$name} }, $sub;
+    my ( $self, $name, $sub, %args ) = @_;
+
+    my $class = delete $args{ class } || "Beam::Listener";
+    croak( "listener object must descend from Beam::Listener" )
+      unless $class->isa( 'Beam::Listener' );
+
+    my $listener = $class->new( %args, callback => $sub );
+
+    push @{ $self->_listeners->{$name} }, $listener;
     weaken $self;
     weaken $sub;
     return sub {
@@ -98,7 +135,7 @@ sub unsubscribe {
     else {
         my $listeners = $self->_listeners->{$name};
         my $idx = 0;
-        $idx++ until $idx > $#{$listeners} or refaddr $listeners->[$idx] eq refaddr $sub;
+        $idx++ until $idx > $#{$listeners} or refaddr $listeners->[$idx]->callback eq refaddr $sub;
         if ( $idx > $#{$listeners} ) {
             croak "Could not find sub in listeners";
         }
@@ -139,7 +176,7 @@ sub emit {
     my @listeners = @{ $self->_listeners->{$name} };
 
     for my $listener ( @listeners  ) {
-        $listener->( $event );
+        $listener->callback->( $event );
         last if $event->is_stopped;
     }
     return $event;
@@ -165,9 +202,25 @@ sub emit_args {
     my @listeners = @{ $self->_listeners->{$name} };
 
     for my $listener ( @listeners ) {
-        $listener->( @args );
+        $listener->callback->( @args );
     }
     return;
+}
+
+=method listeners ( event_name )
+
+Returns a list containing the listeners which have subscribed to the
+specified event from this emitter.  The list elements are either
+instances of L<Beam::Listener> or of custom classes specified in calls
+to L</subscribe>.
+
+=cut
+
+sub listeners {
+
+    my ( $self, $name ) = @_;
+
+    return @{ $self->_listeners->{$name} || [] };
 }
 
 1;
