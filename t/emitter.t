@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Exception;
+use Test::Fatal;
 
 {
     package My::Emitter;
@@ -65,8 +65,8 @@ subtest 'unsubscribe' => sub {
     $emitter->unsubscribe( foo => $foo_listener );
     $emitter->un( "after_foo" );
 
-    dies_ok { $emitter->unsubscribe( foo => $foo_listener ) } "Cannot unsubscribe twice";
-    dies_ok { $emitter->unsubscribe( foo => sub { } ) } "Cannot find sub in listeners";
+    ok exception { $emitter->unsubscribe( foo => $foo_listener ) }, "Cannot unsubscribe twice";
+    ok exception { $emitter->unsubscribe( foo => sub { } ) }, "Cannot find sub in listeners";
 };
 
 subtest 'stop' => sub {
@@ -132,8 +132,8 @@ subtest 'emit args' => sub {
 subtest 'no listeners' => sub {
     my $emitter = My::Emitter::Args->new;
 
-    lives_ok { $emitter->emit( 'foo' ) } "emit";
-    lives_ok { $emitter->emit_args( 'foo' ) } "emit_args";
+    ok !exception { $emitter->emit( 'foo' ) }, "emit lives with no listeners";
+    ok !exception { $emitter->emit_args( 'foo' ) }, "emit_args lives with no listeners";
 };
 
 subtest 'custom name' => sub {

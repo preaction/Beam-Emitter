@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 use Test::More;
-use Test::Exception;
 
 subtest 'Allow a single listener to catch all events' => sub {
 

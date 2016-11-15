@@ -1,7 +1,8 @@
 use strict;
 use warnings;
 
-use Test::Exception tests => 1;
+use Test::More;
+use Test::Fatal;
 
 use Beam::Emitter;
 
@@ -19,10 +20,6 @@ my $unsubscribe = $emitter->on( ping => sub { } );
 
 undef $emitter;
 
-lives_ok { $unsubscribe->() } 'unsubscribe survived destroyed emitter';
+ok !exception { $unsubscribe->() }, 'unsubscribe survived destroyed emitter';
 
-
-
-
-
-
+done_testing;
