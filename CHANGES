@@ -13,6 +13,16 @@ Changelog for Beam-Emitter
       generally-desired enough to be part of the main distribution
       always. Thanks @yanick for the help! (Github #12)
 
+    [Fixed]
+
+    - The Beam::Emitter role no longer pollutes the consumer's namespace
+      with things from Types::Standard, Scalar::Util, and Carp. Thanks
+      @kentnl! (Github #13)
+
+      This could result in problems if you accidentally depended on this
+      behavior. To fix these problems, please import the correct subs
+      explicitly.
+
 1.003     2016-11-11 21:35:53-06:00 America/Chicago
 
     [Fixed]

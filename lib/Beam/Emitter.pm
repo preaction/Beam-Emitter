@@ -5,11 +5,11 @@ our $VERSION = '1.004';
 use strict;
 use warnings;
 
-use Moo::Role;
 use Types::Standard qw(:all);
 use Scalar::Util qw( weaken refaddr );
 use Carp qw( croak );
 use Beam::Event;
+use Moo::Role; # Put this last to ensure proper, automatic cleanup
 
 # The event listeners on this object, a hashref of arrayrefs of
 # EVENT_NAME => [ CALLBACK, ... ]
