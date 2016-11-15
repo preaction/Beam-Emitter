@@ -48,19 +48,19 @@ my $us22 = $foo->subscribe( evt2 => $s22, class => 'Goo', attr => 's22' );
 
 {
     my @s = sort byref $s11, $s12;
-    my @cb = sort byref map { $_->callback } @{ $foo->listeners( 'evt1' ) };
+    my @cb = sort byref map { $_->callback } $foo->listeners( 'evt1' );
     is_deeply( \@cb, \@s, 'initial evt1 listeners' );
 }
 
 {
     my @s = sort byref $s21, $s22;
-    my @cb = sort byref map { $_->callback } @{ $foo->listeners( 'evt2' ) };
+    my @cb = sort byref map { $_->callback } $foo->listeners( 'evt2' );
     is_deeply( \@cb, \@s, 'initial evt2 listeners' );
 }
 
 {
     &$us12;
-    my @l  = sort byref @{ $foo->listeners( 'evt1' ) };
+    my @l  = sort byref $foo->listeners( 'evt1' );
     my @cb = map { $_->callback } @l;
     is_deeply( \@cb,  [ $s11 ], 'after evt1 listener removal' );
     ok( $l[0]->isa( 'Beam::Listener' ) && ! $l[0]->isa( 'Goo' ), 'default Listener class' );
@@ -68,7 +68,7 @@ my $us22 = $foo->subscribe( evt2 => $s22, class => 'Goo', attr => 's22' );
 
 {
     &$us21;
-    my @l  = sort byref @{ $foo->listeners( 'evt2' ) };
+    my @l  = sort byref $foo->listeners( 'evt2' );
     my @cb = map { $_->callback } @l;
     is_deeply( \@cb,  [ $s22 ], 'after evt2 listener removal' );
     ok( $l[0]->isa( 'Goo' ), 'custom Listener class' );
