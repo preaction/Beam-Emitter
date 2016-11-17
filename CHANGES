@@ -8,6 +8,11 @@ Changelog for Beam-Emitter
       This is a rare thing to want, but it makes some future cookbook
       items (like a catch-all '*' event) more useful.
 
+    - Allow the event's emitter object to be overridden when emitting
+      the event. This, too, is a rare thing to want, but it allows an
+      object to more easily proxy the event emitter if needed. Thanks
+      @djerius! (Github #19)
+
     - Added a Cookbook document (Beam::Emitter::Cookbook) to start
       demonstrating some useful patterns that aren't quite useful or
       generally-desired enough to be part of the main distribution
