@@ -4,6 +4,8 @@ use warnings;
 use Test::More;
 use Test::Fatal;
 
+use Scalar::Util qw[ refaddr ];
+
 {
     package My::Emitter;
 
@@ -143,6 +145,19 @@ subtest 'custom name' => sub {
     $emitter->emit( 'foo', name => 'bar' );
     is scalar @events, 1, 'foo event caught';
     is $events[0]->name, 'bar', 'foo event correctly renamed bar';
+};
+
+
+subtest 'alternate emitter' => sub {
+
+    my $emitter = My::Emitter->new;
+    my $alt_emitter = My::Emitter->new;
+    my @events;
+    $emitter->on( 'foo', sub { push @events, @_ } );
+    $emitter->emit( 'foo', emitter => $alt_emitter );
+    is scalar @events, 1, 'foo event caught';
+    is refaddr $events[0]->emitter, refaddr $alt_emitter,
+     'alternate emitter correctly specified';
 };
 
 done_testing;
