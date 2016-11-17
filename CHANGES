@@ -37,6 +37,15 @@ Changelog for Beam-Emitter
       behavior. To fix these problems, please import the correct subs
       explicitly.
 
+    - The Beam::Emitter role now allows composing classes to use method
+      modifiers for the `subscribe` and `unsubscribe` methods.
+      Previously, if the composing class overrode either of those
+      methods, those changes would be ignored by the `on` and `un`
+      aliases. Now, the `on` and `un` aliases use proper method
+      resolution. This means that if you want to modify behaviors of
+      your class on subscribe and unsubscribe, you must only modify the
+      `subscribe` and `unsubscribe` methods. (Github #18)
+
 1.003     2016-11-11 21:35:53-06:00 America/Chicago
 
     [Fixed]

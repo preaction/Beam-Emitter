@@ -113,11 +113,12 @@ sub subscribe {
 
 =method on ( event_name, subref )
 
-Alias for L</subscribe>.
+An alias for L</subscribe>. B<NOTE>: Do not use this alias for method
+modifiers! If you want to override behavior, override C<subscribe>.
 
 =cut
 
-*on = \&subscribe;
+sub on { shift->subscribe( @_ ) }
 
 =method unsubscribe ( event_name [, subref ] )
 
@@ -146,11 +147,12 @@ sub unsubscribe {
 
 =method un ( event_name [, subref ] )
 
-An alias for L</unsubscribe>
+An alias for L</unsubscribe>. B<NOTE>: Do not use this alias for method
+modifiers! If you want to override behavior, override C<unsubscribe>.
 
 =cut
 
-*un = \&unsubscribe;
+sub un { shift->unsubscribe( @_ ) }
 
 =method emit ( name, event_args )
 
