@@ -9,7 +9,7 @@ use Types::Standard qw(:all);
 use Scalar::Util qw( weaken refaddr );
 use Carp qw( croak );
 use Beam::Event;
-use Beam::Listener;
+use Module::Runtime qw( use_module );
 use Moo::Role; # Put this last to ensure proper, automatic cleanup
 
 
@@ -98,7 +98,7 @@ sub subscribe {
 
     my $class = delete $args{ class } || "Beam::Listener";
     croak( "listener object must descend from Beam::Listener" )
-      unless $class->isa( 'Beam::Listener' );
+      unless use_module($class)->isa( 'Beam::Listener' );
 
     my $listener = $class->new( %args, callback => $sub );
 

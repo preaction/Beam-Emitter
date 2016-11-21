@@ -39,7 +39,6 @@ subtest "Create initial listeners" => sub {
         ok !exception {
             $us11 = $foo->subscribe( evt1 => $s11 );
             $us12 = $foo->subscribe( evt1 => $s12 );
-            $us21 = $foo->subscribe( evt2 => $s21 );
         }, 'construction';
 
     };
@@ -47,16 +46,32 @@ subtest "Create initial listeners" => sub {
     subtest "custom listener class" => sub {
 
         # test constructor is being called with args
-        like exception { $foo->subscribe( evt2 => $s22, class => 'Goo' ) },
+        like exception { $foo->subscribe( evt2 => $s21, class => 'Goo' ) },
         qr/missing required arguments/i, "required attribute missing";
 
         ok !exception {
-            $us22
-              = $foo->subscribe( evt2 => $s22, class => 'Goo', attr => 's22' )
+            $us21
+              = $foo->subscribe( evt2 => $s21, class => 'Goo', attr => 's22' )
         },
         "required attribute specified";
 
     };
+
+    subtest "custom listener class in separate file" => sub {
+
+        # test constructor is being called with args
+        like exception { $foo->subscribe( evt2 => $s22, class => 't::CustomListener' ) },
+        qr/missing required arguments/i, "required attribute missing";
+
+        ok !exception {
+            $us22
+              = $foo->subscribe( evt2 => $s22, class => 't::CustomListener', attr => 's22' )
+        },
+        "required attribute specified";
+
+    };
+
+
 
 };
 
@@ -95,7 +110,7 @@ subtest "Ensure lists are consistent after unsubscription" => sub {
         my @l = sort byref $foo->listeners( 'evt2' );
         my @cb = map { $_->callback } @l;
         is_deeply( \@cb, [$s22], 'remaining listeners consistent' );
-        ok( $l[0]->isa( 'Goo' ), 'listener is in custom Listener class' );
+        ok( $l[0]->isa( 't::CustomListener' ), 'listener is in custom Listener class' );
       }
 };
 
