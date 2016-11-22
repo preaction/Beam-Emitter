@@ -230,37 +230,87 @@ __END__
 
 =head1 SYNOPSIS
 
-    package My::Emitter;
-
-    use Moo;
-    with 'Beam::Emitter';
-
-    sub do_something {
-        my ( $self ) = @_;
-
-        # Give event listeners a chance to prevent something
-        my $event = $self->emit( "before_something" );
-        return if $event->is_default_stopped;
-
-        # ... do something
-
-        # Notify listeners we're done with something
-        $self->emit( 'after_something' );
+    # A simple custom event class to perform data validation
+    { package My::Event;
+        use Moo;
+        extends 'Beam::Event';
+        has data => ( is => 'ro' );
     }
 
-    sub custom_something {
-        my ( $self ) = @_;
+    # A class that reads and writes data, allowing event handlers to
+    # process the data
+    { package My::Emitter;
+        use Moo;
+        with 'Beam::Emitter';
 
-        # Send arbitrary arguments to our event listener
-        $self->emit_args( 'custom_something', "foo", "bar" );
+        sub write_data {
+            my ( $self, @data ) = @_;
+
+            # Give event listeners a chance to perform further processing of
+            # data
+            my $event = $self->emit( "process_data",
+                class => 'My::Event',
+                data => \@data,
+            );
+
+            # Give event listeners a chance to stop the write
+            return if $event->is_default_stopped;
+
+            # Write the data
+            open my $file, '>', 'output';
+            print { $file } @data;
+            close $file;
+
+            # Notify listeners we're done writing and send them the data
+            # we wrote
+            $self->emit( 'after_write', class => 'My::Event', data => \@data );
+        }
     }
+
+    # An event handler that increments every input value in our data
+    sub increment {
+        my ( $event ) = @_;
+        my $data = $event->data;
+        $_++ for @$data;
+    }
+
+    # An event handler that performs data validation and stops the
+    # processing if invalid
+    sub prevent_negative {
+        my ( $event ) = @_;
+        my $data = $event->data;
+        $event->prevent_default if grep { $_ < 0 } @$data;
+    }
+
+    # An event handler that logs the data to STDERR after we've written in
+    sub log_data {
+        my ( $event ) = @_;
+        my $data = $event->data;
+        print STDERR "Wrote data: " . join( ',', @$data );
+    }
+
+    # Wire up our event handlers to a new processing object
+    my $processor = My::Emitter->new;
+    $processor->on( process_data => \&increment );
+    $processor->on( process_data => \&prevent_negative );
+    $processor->on( after_write => \&log_data );
+
+    # Process some data
+    $processor->process_data( 1, 2, 3, 4, 5 );
+    $processor->process_data( 1, 3, 7, -9, 11 );
+
+    # Log data before and after writing
+    my $processor = My::Emitter->new;
+    $processor->on( process_data => \&log_data );
+    $processor->on( after_write => \&log_data );
 
 =head1 DESCRIPTION
 
-This role is used by classes that want to emit events to subscribers. A
-subscriber registers interest in an event using the L<subscribe> or L<on>
-methods. Then, the class can L<emit> events to be handled by any listening
-subscribers.
+This role is used by classes that want to add callback hooks to allow
+users to add new behaviors to their objects. These hooks are called
+"events". A subscriber registers a callback for an event using the
+L</subscribe> or L</on> methods. Then, the class can call those
+callbacks by L<emitting an event with the emit() method|/emit>.
 
 Using the L<Beam::Event> class, subscribers can stop an event from being
 processed, or prevent the default action from happening.
