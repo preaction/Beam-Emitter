@@ -1,4 +1,4 @@
-package t::CustomListener;
+package CustomListener;
 
 use Moo;
 extends 'Beam::Listener';
