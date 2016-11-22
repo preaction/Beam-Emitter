@@ -1,6 +1,16 @@
 Changelog for Beam-Emitter
 
-{{ $NEXT }}
+1.005     2016-11-22 12:56:41-06:00 America/Chicago
+
+    [Fixed]
+
+    - Custom listener classes are now loaded automatically. This
+      prevents a very strange error about the unloaded class not
+      inheriting from Beam::Listener, even though it does. Perl doesn't
+      know that it does, because the class isn't loaded, and there's no
+      good way to detect if a class is loaded or if it failed to load.
+      So, to make it easier, Beam::Emitter now simply loads the class
+      for you. Thanks @djerius (Github #23)
 
 1.004     2016-11-17 17:28:01-06:00 America/Chicago
 

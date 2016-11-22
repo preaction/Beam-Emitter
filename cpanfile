@@ -1,4 +1,5 @@
 requires "Carp" => "0";
+requires "Module::Runtime" => "0";
 requires "Moo" => "0";
 requires "Scalar::Util" => "0";
 requires "Types::Standard" => "0.008";
@@ -12,6 +13,7 @@ on 'test' => sub {
   requires "IPC::Open3" => "0";
   requires "Test::API" => "0";
   requires "Test::Fatal" => "0";
+  requires "Test::Lib" => "0";
   requires "Test::More" => "0";
 };
 
