@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Fatal;
+use Test::Lib;
 
 use Scalar::Util qw[ refaddr ];
 
@@ -60,12 +61,12 @@ subtest "Create initial listeners" => sub {
     subtest "custom listener class in separate file" => sub {
 
         # test constructor is being called with args
-        like exception { $foo->subscribe( evt2 => $s22, class => 't::CustomListener' ) },
+        like exception { $foo->subscribe( evt2 => $s22, class => 'CustomListener' ) },
         qr/missing required arguments/i, "required attribute missing";
 
         ok !exception {
             $us22
-              = $foo->subscribe( evt2 => $s22, class => 't::CustomListener', attr => 's22' )
+              = $foo->subscribe( evt2 => $s22, class => 'CustomListener', attr => 's22' )
         },
         "required attribute specified";
 
@@ -110,7 +111,7 @@ subtest "Ensure lists are consistent after unsubscription" => sub {
         my @l = sort byref $foo->listeners( 'evt2' );
         my @cb = map { $_->callback } @l;
         is_deeply( \@cb, [$s22], 'remaining listeners consistent' );
-        ok( $l[0]->isa( 't::CustomListener' ), 'listener is in custom Listener class' );
+        ok( $l[0]->isa( 'CustomListener' ), 'listener is in custom Listener class' );
       }
 };
 
