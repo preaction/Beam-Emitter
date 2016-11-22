@@ -1,5 +1,5 @@
 package Beam::Listener;
-our $VERSION = '1.005';
+our $VERSION = '1.006';
 
 use strict;
 use warnings;
