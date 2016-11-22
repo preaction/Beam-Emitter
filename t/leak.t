@@ -9,6 +9,10 @@ BEGIN {
         plan skip_all => 'Test::LeakTrace required for this test';
         exit;
     }
+    if ( $ENV{COVERAGE} ) {
+        plan skip_all => 'Fails during coverage tests ($ENV{COVERAGE}=1). Skipping';
+        exit;
+    }
 }
 
 {
