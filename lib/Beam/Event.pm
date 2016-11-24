@@ -2,6 +2,35 @@ package Beam::Event;
 our $VERSION = '1.006';
 # ABSTRACT: Base Event class
 
+=head1 SYNOPSIS
+
+    # My::Emitter consumes the Beam::Emitter role
+    my $emitter = My::Emitter->new;
+    $emitter->on( "foo", sub {
+        my ( $event ) = @_;
+        print "Foo happened!\n";
+        # stop this event from continuing
+        $event->stop;
+    } );
+    my $event = $emitter->emit( "foo" );
+
+=head1 DESCRIPTION
+
+This is the base event class for C<Beam::Emitter> objects.
+
+The base class is only really useful for notifications. Create a subclass
+to add data attributes.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Beam::Emitter>
+
+=back
+
+=cut
+
 use strict;
 use warnings;
 
@@ -91,31 +120,4 @@ sub stop {
 
 1;
 __END__
-
-=head1 SYNOPSIS
-
-    # My::Emitter consumes the Beam::Emitter role
-    my $emitter = My::Emitter->new;
-    $emitter->on( "foo", sub {
-        my ( $event ) = @_;
-        print "Foo happened!\n";
-        # stop this event from continuing
-        $event->stop;
-    } );
-    my $event = $emitter->emit( "foo" );
-
-=head1 DESCRIPTION
-
-This is the base event class for C<Beam::Emitter> objects.
-
-The base class is only really useful for notifications. Create a subclass
-to add data attributes.
-
-=head1 SEE ALSO
-
-=over 4
-
-=item L<Beam::Emitter>
-
-=back
 

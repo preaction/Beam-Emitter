@@ -1,28 +1,6 @@
 package Beam::Listener;
 our $VERSION = '1.006';
 
-use strict;
-use warnings;
-
-use Types::Standard qw(:all);
-use Moo;
-
-=attr code
-
-A coderef which will be invoked when the event is distributed.
-
-=cut
-
-has callback => (
-    is  => 'ro',
-    isa => CodeRef,
-    required => 1,
-);
-
-1;
-
-__END__
-
 =head1 SYNOPSIS
 
   package MyListener;
@@ -60,3 +38,28 @@ about listeners. Create a subclass to add data attributes.
 =item L<Beam::Emitter>
 
 =back
+
+=cut
+
+use strict;
+use warnings;
+
+use Types::Standard qw(:all);
+use Moo;
+
+=attr code
+
+A coderef which will be invoked when the event is distributed.
+
+=cut
+
+has callback => (
+    is  => 'ro',
+    isa => CodeRef,
+    required => 1,
+);
+
+1;
+
+__END__
+
