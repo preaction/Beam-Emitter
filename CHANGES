@@ -2,6 +2,8 @@ Changelog for Beam-Emitter
 
 {{ $NEXT }}
 
+1.006     2016-11-23 22:35:48-06:00 America/Chicago
+
     [Added]
 
     - Added a couple more cookbook entries to show Beam::Emitter

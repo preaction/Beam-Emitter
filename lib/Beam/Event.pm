@@ -1,5 +1,5 @@
 package Beam::Event;
-our $VERSION = '1.006';
+our $VERSION = '1.007';
 # ABSTRACT: Base Event class
 
 =head1 SYNOPSIS

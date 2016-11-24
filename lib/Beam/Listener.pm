@@ -1,5 +1,5 @@
 package Beam::Listener;
-our $VERSION = '1.006';
+our $VERSION = '1.007';
 
 =head1 SYNOPSIS
 

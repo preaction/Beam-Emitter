@@ -1,5 +1,5 @@
 package Beam::Emitter;
-our $VERSION = '1.006';
+our $VERSION = '1.007';
 # ABSTRACT: Role for event emitting classes
 
 =head1 SYNOPSIS
