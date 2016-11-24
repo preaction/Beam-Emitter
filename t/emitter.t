@@ -134,7 +134,11 @@ subtest 'emit args' => sub {
 subtest 'no listeners' => sub {
     my $emitter = My::Emitter::Args->new;
 
-    ok !exception { $emitter->emit( 'foo' ) }, "emit lives with no listeners";
+    my $event;
+    ok !exception { $event = $emitter->emit( 'foo' ) }, "emit lives with no listeners";
+    isa_ok $event, 'Beam::Event', 'event is still returned';
+    is $event->name, 'foo', 'event name is correct';
+
     ok !exception { $emitter->emit_args( 'foo' ) }, "emit_args lives with no listeners";
 };
 
