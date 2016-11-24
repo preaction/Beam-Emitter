@@ -3,6 +3,9 @@ use strict;
 use warnings;
 use Test::More;
 
+# Simple emitter to use through this test
+{ package My::Emitter; use Moo; with 'Beam::Emitter'; }
+
 subtest 'Beam::Emitter SYNOPSIS' => sub {
 
     # A simple custom event class to perform data validation
@@ -121,6 +124,26 @@ subtest 'Allow a single listener to catch all events' => sub {
     is $all[1][0]->name, $events{ bar }[0][0]->name,
         'catch-all listener event has same name as original listener event';
 
+};
+
+subtest 'Use an object method as an event handler' => sub {
+    eval { require curry; 1 } or plan skip_all => 'Subtest requires "curry" module';
+
+    { package My::Handler::Object;
+        use Moo;
+        our @handler_args;
+        sub handler {
+            @handler_args = @_;
+        }
+    }
+
+    my $handler = My::Handler::Object->new;
+    my $emitter = My::Emitter->new;
+    $emitter->on( 'foo', $handler->curry::weak::handler );
+    my $event = $emitter->emit( 'foo' );
+
+    is_deeply \@My::Handler::Object::handler_args, [ $handler, $event ],
+        'handler method with curry::weak gets correct arguments';
 };
 
 done_testing;

@@ -28,3 +28,34 @@ called C<*>:
 Because we pass in the C<name> key to C<emit()>, the original name of
 the event will be available to our listener as C<< $event->name >>.
 
+=head2 Use an object method as an event handler
+
+Often you might want to use an object method as an event handler so that
+your event handler has access to your object's data and methods. You
+could manually create a subroutine that calls your method, like so:
+
+    $emitter->on( 'event', sub { $object->method( @_ ) } );
+
+But this has a couple drawbacks: It's a bunch of typing, and it closes
+over a reference to your object which means your object lives as long as
+the event emitter does. This can even cause circular references, which
+are a common cause of memory problems in Perl.
+
+To fix these problems, you could again do it manually:
+
+    use Scalar::Util qw( weaken );
+    weaken $object; # Reduce our object's reference count
+    $emitter->on( 'event', sub {
+        return unless $object; # We might have been cleaned up
+        $object->method( @_ );
+    } );
+
+Or you could use the L<curry> module:
+
+    $emitter->on( 'event', $object->curry::weak::method );
+
+The "curry" module creates new subroutine references from existing ones,
+passing in any arguments. There's a corresponding "curry::weak" module
+which does the same thing, but weakens any references used as arguments.
+This is the easiest way to use object methods as event handlers.
+
