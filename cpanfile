@@ -20,6 +20,7 @@ on 'test' => sub {
 on 'test' => sub {
   recommends "CPAN::Meta" => "2.120900";
   recommends "Test::LeakTrace" => "0";
+  recommends "curry" => "0";
 };
 
 on 'configure' => sub {

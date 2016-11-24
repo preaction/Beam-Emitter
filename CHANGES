@@ -1,5 +1,18 @@
 Changelog for Beam-Emitter
 
+{{ $NEXT }}
+
+    [Added]
+
+    - Added a couple more cookbook entries to show Beam::Emitter
+      patterns
+
+    [Fixed]
+
+    - Events with no listeners now correctly return the Event object
+      like they used to. This was a regression starting in v1.004.
+      Thanks @eserte and CPAN Testers for the report (Github #24)
+
 1.005     2016-11-22 12:56:41-06:00 America/Chicago
 
     [Fixed]

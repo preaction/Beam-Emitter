@@ -4,7 +4,7 @@ Beam::Emitter - Role for event emitting classes
 
 # VERSION
 
-version 1.005
+version 1.006
 
 # STATUS
 
