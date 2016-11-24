@@ -146,4 +146,12 @@ subtest 'Use an object method as an event handler' => sub {
         'handler method with curry::weak gets correct arguments';
 };
 
+subtest 'Add custom data to an event handler' => sub {
+    my $name = "Doug";
+    my $emitter = My::Emitter->new;
+    $emitter->on( introduce => sub { is $name, 'Doug' } );
+    $emitter->emit( 'introduce' );
+
+};
+
 done_testing;

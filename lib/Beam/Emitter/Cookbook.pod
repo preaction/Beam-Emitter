@@ -59,3 +59,13 @@ passing in any arguments. There's a corresponding "curry::weak" module
 which does the same thing, but weakens any references used as arguments.
 This is the easiest way to use object methods as event handlers.
 
+=head2 Add custom data to an event handler
+
+To add additional data to an event handler when it's created, you can
+simply "close over" the variable in your new subroutine, like so:
+
+    my $name = "Doug";
+    $emitter->on( introduce => sub {
+        print "Hello, my name is $name";
+    } );
+
