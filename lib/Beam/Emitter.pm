@@ -393,7 +393,7 @@ sub emit {
     my ( $self, $name, %args ) = @_;
 
     my $class = delete $args{ class } || "Beam::Event";
-    $args{ emitter  } ||= $self;
+    $args{ emitter  } = $self if ! defined $args{ emitter };
     $args{ name     } ||= $name;
     my $event = $class->new( %args );
 

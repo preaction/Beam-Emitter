@@ -164,4 +164,27 @@ subtest 'alternate emitter' => sub {
      'alternate emitter correctly specified';
 };
 
+{
+  package My::Overloaded::Emitter;
+  use Moo;
+
+  extends 'My::Emitter';
+  use overload bool => sub { 0 };
+}
+
+subtest 'overloaded bool operator in emitter' => sub {
+
+    my $emitter = My::Emitter->new;
+    my $class;
+
+    $emitter->on( 'foo', sub { $class = ref $_[0]->emitter } );
+    $emitter->emit(
+        'foo',
+        emitter => My::Overloaded::Emitter->new,
+	);
+
+    is( $class, 'My::Overloaded::Emitter', 'insensitive to bool operator' );
+
+};
+
 done_testing;
