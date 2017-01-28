@@ -169,7 +169,7 @@ sub emit {
     return unless exists $self->_listeners->{$name};
 
     my $class = delete $args{ class } || "Beam::Event";
-    $args{ emitter  } ||= $self;
+    $args{ emitter  } = $self if ! defined $args{ emitter };
     $args{ name     } ||= $name;
     my $event = $class->new( %args );
 
