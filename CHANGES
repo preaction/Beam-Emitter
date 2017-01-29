@@ -2,6 +2,8 @@ Changelog for Beam-Emitter
 
 {{ $NEXT }}
 
+1.007     2017-01-29 01:43:15-06:00 America/Chicago
+
     [Fixed]
 
     - Passing in an overridden emitter when emitting an event no longer
