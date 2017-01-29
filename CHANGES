@@ -2,6 +2,12 @@ Changelog for Beam-Emitter
 
 {{ $NEXT }}
 
+    [Fixed]
+
+    - Passing in an overridden emitter when emitting an event no longer
+      uses the emitter's boolean overload. This could cause the wrong
+      emitter to be used in the event. Thanks @djerius (Github #25)
+
 1.006     2016-11-23 22:35:48-06:00 America/Chicago
 
     [Added]

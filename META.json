@@ -61,15 +61,15 @@
    "provides" : {
       "Beam::Emitter" : {
          "file" : "lib/Beam/Emitter.pm",
-         "version" : "1.006"
+         "version" : "1.007"
       },
       "Beam::Event" : {
          "file" : "lib/Beam/Event.pm",
-         "version" : "1.006"
+         "version" : "1.007"
       },
       "Beam::Listener" : {
          "file" : "lib/Beam/Listener.pm",
-         "version" : "1.006"
+         "version" : "1.007"
       }
    },
    "release_status" : "stable",
@@ -85,7 +85,7 @@
       },
       "x_IRC" : "irc://irc.perl.org/#beam"
    },
-   "version" : "1.006",
+   "version" : "1.007",
    "x_authority" : "cpan:PREACTION",
    "x_contributors" : [
       "Diab Jerius <djerius@cfa.harvard.edu>",
